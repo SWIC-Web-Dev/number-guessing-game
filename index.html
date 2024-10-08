@@ -5,19 +5,43 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- TODO: Update this! -->
-    <title>Vite App</title>
+    <title>Number Guessing Game</title>
 
     <link rel="stylesheet" href="./styles.css" />
   </head>
 
-  <!-- TODO: Do what must be done! -->
-  <body class="flex min-h-screen items-center justify-center">
+  <body
+    class="flex min-h-screen flex-col items-center gap-4 bg-slate-900 text-white"
+  >
     <h1
-      class="m-4 text-2xl font-extrabold text-indigo-500 sm:text-3xl md:text-4xl lg:text-5xl"
+      class="m-4 text-2xl font-extrabold capitalize text-indigo-500 sm:text-3xl md:text-4xl lg:text-5xl"
     >
-      Hello Vite!
+      Number guessing game
     </h1>
+
+    <p>
+      We have selected a random number between 1 and 100. See if you can guess
+      it in 10 turns or fewer. We'll tell you if your guess was too high or too
+      low.
+    </p>
+
+    <form class="flex flex-col gap-4">
+      <div class="flex items-center gap-4">
+        <label for="guess" class="font-semibold"> Enter a guess:</label>
+        <input
+          type="number"
+          id="guess"
+          class="rounded-md border border-gray-300 p-2"
+          min="1"
+          max="100"
+        />
+      </div>
+
+      <!-- TODO: Increment the guess whenever this clicked. -->
+      <button type="submit" class="rounded bg-green-500 py-2 text-white">
+        Submit Guess
+      </button>
+    </form>
 
     <script type="module" src="./src/main.js"></script>
   </body>
