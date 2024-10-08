@@ -31,17 +31,23 @@
         <input
           type="number"
           id="guess"
-          class="rounded-md border border-gray-300 p-2"
+          class="rounded-md border border-gray-300 p-2 text-slate-900"
           min="1"
           max="100"
         />
       </div>
 
-      <!-- TODO: Increment the guess whenever this clicked. -->
       <button type="submit" class="rounded bg-green-500 py-2 text-white">
         Submit Guess
       </button>
     </form>
+
+    <section class="flex flex-col gap-4">
+      <p class="text-5xl font-bold text-indigo-600" id="message"></p>
+
+      <p class="font-semibold">Guesses so far:</p>
+      <ul id="guesses" class="flex gap-2 [&>li]:after:content-[',']"></ul>
+    </section>
 
     <script type="module" src="./src/main.js"></script>
   </body>
