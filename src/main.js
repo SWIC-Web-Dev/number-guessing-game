@@ -29,13 +29,14 @@ formRef.addEventListener("submit", (e) => {
   // Clear the list before adding the new list of guesses
   guessListRef.innerHTML = "";
 
-  guesses.map((guess) => {
-    guessListRef.innerHTML += `<li>${guess}</li>`;
-  });
+  guessListRef.innerHTML = guesses.map((guess) => `<li>${guess}</li>`).join("");
 
   const numOfGuessesMessageRef = `You have ${MAX_GUESSES - guesses.length} guesses left.`;
 
   if (currentGuess < randomGuessNumber)
     messageRef.textContent = `Too low! ${numOfGuessesMessageRef}.`;
   else messageRef.textContent = `Too high! ${numOfGuessesMessageRef}.`;
+
+  // Clear the input after submitting
+  guessInputRef.value = "";
 });
