@@ -1,34 +1,214 @@
-# HTML-Tailwind-JS Template Repo
+# Number Guessing Game - Code Review & Reflection Guide
 
-This repo should provide a stable template for working with HTML, TailwindCSS, and JavaScript. With the provided VS Code Settings and Extensions, all major linting and formatting should be handled automatically, including Tailwind class formatting 🤞🏾.
+To start with, we'll need a deep dive Gist into how this code is working and what you make of it.
 
-## Getting Started
+To help guide this, consider the following questions:
 
-Utilize your GitHub Classroom link or click the "Use this template" button to create a new repo. This will create a new repo with the same structure as this one on your GitHub account.
+## Component Architecture
 
-Clone the repo to your local machine by clicking the green "Code" button. Normally, the easiest way to do this is the GitHub CLI, assuming that you have it installed. If not, you can download it [here](https://cli.github.com/). You also need to run `gh auth login` to authenticate your GitHub account. One other with the GitHub CLI is that you may have to restart your terminal after installing it.
+- How is the code organized into different components?
+- Why do you think the code was split into separate files?
+- Can you trace how the components connect together?
+- What's the benefit of this modular approach?
 
-![Clone the repo with GitHub CLI](./clone.png)
+## DOM Manipulation Understanding
 
-You'll copy the command by clicking the copy icon there ☝️. Navigate to your `Code` or `Dev` or whatever directory you have where you are keeping your code projects and paste the command in.
+- How does the code interact with HTML elements?
+- What are the different ways `querySelector` is used?
+- How is the game's output updated in the DOM?
+- What role does the `innerHTML` property play?
 
-⚠️ DO NOT clone a repo inside another repo. This will cause issues with git and you'll have to delete the inner repo to fix it. Make sure that you are in a directory that is not a git repo before cloning. To put it another way, if you see the annotation `(master)` or `(main)` in your terminal, you are in a git repo. You can check by running `git status`. If you see `fatal: not a git repository (or any of the parent directories): .git`, you are not in a git repo.
+## Event Handling
 
-So, again, make sure you are not in a git repo before cloning this repo. No nested repos, please 🙏:🏾.
+- How does the form submission work?
+- What happens when a user submits a guess?
+- Why is `e.preventDefault()` used?
+- How is user input processed?
 
-First, `cd` into the newly created repo. You can do `ls` to check for it and then type `cd` followed by at least the first few characters of the repo name. You will now have changed into the repo directory (it will probably show `(master)` or `(main)`.
+## Game Logic Analysis
 
-Now, it's time to install the project's dependencies. You can do this by running `npm install` in the root of the project. This will install all the dependencies listed in the `package.json` file.
+In this game, "state" refers to the data that needs to be tracked while the game is running:
 
-Summarily, this checks the `package.json` file for the necessary `"dependencies"` and/or `"devDependencies"`. It communicates with the npm registry to download the necessary packages and install them in the `node_modules` directory. This directory is created in the root of the project and is where all the dependencies are stored. This directory is ignored 🙈 by Git because it is so bloated.
+- The list of guesses made so far (`guesses` array)
+- The random number to guess (`randomGuessNumber`)
+- Whether the game is over (when you win or use all guesses)
+  Think of state as "remembering" the current situation of the game.
 
-Now, open the code up with `code .`. This runs the `code` command (for VS Code) and opens the current directory (`.`) in the editor.
+- How does the code track the game state?
+- How are guesses stored and displayed?
+- How does the code determine if a guess is too high or too low?
+- How does it handle the end of the game?
 
-You should see a `.vscode` directory in the root of the project. This directory contains the settings and extensions that are recommended for this project. You should see a notification in the bottom right corner of the editor that says "Recommended Extensions Found". Click "Install All" to install the recommended extensions.
-If you don't, then hopefully 🤞🏾 that means that you have already installed the extensions.
+## Array Methods Deep Dive
 
-Check out the files - you'll see HTML, CSS, and JS files (if needed) in `src`.
+- How is the `map` method used in this code?
+- Why is `join("")` needed after `map`?
+- Could other array methods work here? Why or why not?
+- How does the code maintain the list of guesses?
 
-> Do what must be done.
+---
 
-You'll want to switch back over to your terminal and run `npm run dev` to start the Vite local server. There'll be a message in the terminal that says `Server running at http://localhost:3000`. Open that link in your browser to see the project. As you make changes to the files, the browser will automatically refresh to show the changes 🧑‍💻.
+Remember to answer thoroughly and use your own thoughts and analogies to build on whatever you may glean from the use of AI.
+
+Feel free to [copy and paste whatever snippets](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks#fenced-code-blocks) you need to into your Gist to help illustrate your points.
+
+Now that you have reflected on the code, let's move on to enhancing the game!
+
+---
+
+## Game Enhancements
+
+Try implementing these features to deepen your understanding:
+
+### Input validation
+
+1. Add input validation
+
+   - Check that input is a number
+
+     ```js
+     if (isNaN(parseInt(guessInputRef.value))) {
+       messageRef.textContent = "Please enter a number";
+       return;
+     }
+     ```
+
+   - Check that number is between 1 and 100
+
+     ```js
+     const guess = parseInt(guessInputRef.value);
+
+     if (guess < 1 || guess > 100) {
+       messageRef.textContent = "Please enter a number between 1 and 100";
+       return;
+     }
+     ```
+
+   - Show errors using existing message element
+     (We already have: `<p id="message"></p>`)
+
+   - Keep input value when error occurs
+     (Don't clear input like we do with valid guesses)
+
+   Hint: Add these checks at start of form submit handler
+
+### Implement a reset game button
+
+- Create button component:
+
+  ```js
+  // components/form/reset.js
+  export default function Reset() {
+    return `
+      <button 
+        type="button" 
+        id="reset"
+        class="bg-indigo-500 text-white p-2 rounded"
+      >
+        New Game
+      </button>
+    `;
+  }
+  ```
+
+- Add to form component:
+
+  ```js
+  import Reset from "./reset";
+
+  export default function Form() {
+    return `
+      <form class="flex flex-col gap-4">
+        ${Input()}
+        ${Submit()}
+        ${Reset()}
+        ${Output()}
+      </form>
+    `;
+  }
+  ```
+
+- Add reference and handler:
+
+  ```js
+  // In lib.js
+  export const resetButtonRef = document.querySelector("#reset");
+
+  // In main.js
+  function resetGame() {
+    guesses = [];
+    randomGuessNumber = Math.floor(Math.random() * 100) + 1;
+    guessListRef.innerHTML = "";
+    messageRef.textContent = "";
+    guessInputRef.value = "";
+    guessInputRef.disabled = false;
+  }
+
+  resetButtonRef.addEventListener("click", resetGame);
+  ```
+
+### Add High Score Tracking
+
+- Add score tracking:
+
+  ```js
+  // At top with other state
+  let bestScore = Infinity; // No wins yet
+
+  // In win condition
+  if (currentGuess === randomGuessNumber) {
+    const score = guesses.length;
+    if (score < bestScore) bestScore = score;
+
+    messageRef.textContent = `You won in ${score} guesses! Best: ${bestScore}`;
+    guessInputRef.disabled = true;
+    return;
+  }
+  ```
+
+### Add Visual Feedback for Guess History
+
+- Modify the map function:
+
+  ```js
+  guessListRef.innerHTML = guesses
+    .map((guess) => {
+      const comparison = guess < randomGuessNumber ? "low" : "high";
+      const arrow = guess < randomGuessNumber ? "↑" : "↓";
+
+      return `
+        <li class="guess-${comparison}">
+          ${guess} ${arrow}
+        </li>
+      `;
+    })
+    .join("");
+  ```
+
+- Add Tailwind
+
+  ```js
+  guessListRef.innerHTML = guesses
+    .map((guess) => {
+      const color =
+        guess < randomGuessNumber ? "text-blue-500" : "text-red-500";
+      const arrow = guess < randomGuessNumber ? "↑" : "↓";
+      return `
+        <li class="${color}">
+          ${guess} ${arrow}
+        </li>
+      `;
+    })
+    .join("");
+  ```
+
+Pick one task to start with. Each builds on core concepts from the original code:
+
+- Task 1 practices input handling
+- Task 2 reuses component patterns
+- Task 3 extends state tracking
+- Task 4 enhances DOM manipulation
+
+Take it step by step. Test each change before moving to the next part. Commit early and commit often!
+
+Remember to use the VS Code Conventional Commits extension to keep your commits organized, or just use the traditional commit style, such as: `git commit -m "Add reset button"`
